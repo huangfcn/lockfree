@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rbq.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="fixedSizeMemoryLF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mirrorbuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rbq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

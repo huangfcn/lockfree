@@ -25,14 +25,28 @@
 	// free ring buffer queue
 	void rbq_free(rbq_t * rbq);
 
+	// ================================================================================
 	// push/pop/full/empty/size operations
+	// ================================================================================
+	// Push and pop implemented with FAA on index and CAS loop on data. 
+	// FAA will assign a queue slot to each caller and 
+	// CAS will make sure a correct data swap.
+	// ================================================================================
+	// CAS loop on data will distribute CAS loops onto the whole data set, 
+	// it will reduce the CAS conflicts and boost the performance.
+	// ================================================================================
+	// Data enque/dequeue assumes to be address, 
+	// NULL is not allowed and it is used as special data in CAS loop. 
+	// ================================================================================
 	bool   rbq_push(rbq_t * rbq, void * data);
 	void * rbq_pop (rbq_t * rbq);
 	bool   rbq_full (const rbq_t * rbq);
 	bool   rbq_empty(const rbq_t * rbq);
 	size_t rbq_size (const rbq_t * rbq);
 
-	// push/pop using the method in "Yet another implementation of a lock-free circular array queue" by Faustino Frechilla"
+	// push/pop using the method in 
+	// "Yet another implementation of a lock-free circular array queue" 
+	// by Faustino Frechilla"
 	bool   rbq_push2(rbq_t * rbq, void * data);
 	void * rbq_pop2 (rbq_t * rbq);
 
@@ -40,7 +54,7 @@
 	bool   rbq_pushspsc(rbq_t * rbq, void * data);
 	void * rbq_popspsc (rbq_t * rbq);
 
-3, lock free multiple producers multiple consumers queue based on single list (Michael Scott)
+3, lock free multiple producers multiple consumers queue based on single linked list (Michael Scott)
 
 	#include "lffifo.h"
 
@@ -57,7 +71,7 @@
 	bool   lffifo_empty(const lffifo_t * fifo);
 	size_t lffifo_size (const lffifo_t * fifo);
 
-4, lock free multiple producers multiple consumers stack based on single list
+4, lock free multiple producers multiple consumers stack based on single linked list
 
 	#include "lffifo.h"
 

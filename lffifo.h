@@ -346,7 +346,7 @@ extern "C" {
       return true;
    };
 
-   static void * lffifo_pop(lffifo_t * fifo)
+   static inline void * lffifo_pop(lffifo_t * fifo)
    {
       uint64_t valu;
 

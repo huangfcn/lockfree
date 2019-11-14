@@ -350,8 +350,16 @@ extern "C" {
    {
       uint64_t valu;
 
-      /* head/tail/next load with acquire (all changes on other cores we should know) */
+      /* head/tail/next load with acquire 
+         (all changes on other cores we should know) 
+      */
       lf_pointer_t tail, head, next;
+
+      /* define a atmic pointer here to load (next) from 
+         (head.node) in with acquire 
+      */
+      volatile lf_pointer_t * head_node;
+
       while (1)
       {
          head.node = fifo->head_.node;
@@ -360,17 +368,22 @@ extern "C" {
          tail.node = fifo->tail_.node;
          tail.aba_ = fifo->tail_.aba_;
 
-         next.node = (head.node)->node;
-         next.aba_ = (head.node)->aba_;
+         /* next should load with acquire 
+            (all changes on other cores we should know) 
+         */
+         head_node = head.node;
+         next.node = (head_node)->node;
+         next.aba_ = (head_node)->aba_;
 
          if  ((head.node == fifo->head_.node) && (head.aba_ == fifo->head_.aba_))
          {
-            /* queue empty (?) */
-            if (next.node == NULL) {
-               return  NULL;
-            }
-
             if (head.node == tail.node){
+
+               /* queue empty (?) */
+               if (next.node == NULL) {
+                  return  NULL;
+               }
+
                lf_pointer_t newp;
                newp.node = next.node;
                newp.aba_ = tail.aba_+1;

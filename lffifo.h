@@ -176,6 +176,16 @@ extern "C" {
       return (stack->size);
    }
 
+   static inline bool lfstack_empty(lfstack_t * stack)
+   {
+      return (stack->size == 0);
+   }
+
+   static inline bool lfstack_full(lfstack_t * stack)
+   {
+      return (false);
+   }
+
    static inline bool lfstack_push(lfstack_t * stack, void  * value)
    {
       //////////////////////////////////////
@@ -200,11 +210,6 @@ extern "C" {
       FAA(&(stack->size));
 
       return (true);
-   }
-
-   static inline bool lfstack_empty(lfstack_t * stack)
-   {
-      return (stack->size == 0);
    }
 
    static inline void * lfstack_pop(lfstack_t * stack)
@@ -269,6 +274,16 @@ extern "C" {
    static inline int64_t lffifo_size(lffifo_t * fifo)
    {
       return fifo->size;
+   }
+
+   static inline bool lffifo_empty(lffifo_t * fifo)
+   {
+      return (fifo->size == 0);
+   }
+
+   static inline bool lffifo_full(lffifo_t * fifo)
+   {
+      return false;
    }
 
    static inline bool lffifo_push(lffifo_t * fifo, void * value)

@@ -1,6 +1,5 @@
 1, lock free single producer single consumer queue based on ring buffer (magic queue)
 
-	=============================== API ===============================
 	#include "magicq.h"
   
 	// initialize magicq (size will be (1 << order))
@@ -18,7 +17,6 @@
 
 2, lock free multiple producers multiple consumers queue based on ring buffer (RBQ)
 
-	=============================== API ===============================
 	#include "rbq.h"
   
 	// initialize rbq (size will be (1 << order))
@@ -44,7 +42,6 @@
 
 3, lock free multiple producers multiple consumers queue based on single list (Michael Scott)
 
-	=============================== API ===============================
 	#include "lffifo.h"
 
 	// initialize lock-free msq (parameter order not used)
@@ -62,7 +59,6 @@
 
 4, lock free multiple producers multiple consumers stack based on single list
 
-	=============================== API ===============================
 	#include "lffifo.h"
 
 	// initialize lock-free stack (parameter order not used)
@@ -80,8 +76,9 @@
 
 5, lock free memory management based on fixed size memory blocks
    
-	All memory blocks in same size are managed in a stack using single linked list. 
-	Allocate & free memory operation only require one push/pop operation of stack.
+	All memory blocks in same size are managed in a stack using single 
+	linked list. Allocate or free memory only requires one push/pop op 
+	of the stack, usually, it only needs one pointer assignment.
 
 	fixed size memory blocks routines (startup, cleanup, alloc, free)       
 		create a free list with fixed size memory block                      
@@ -124,9 +121,9 @@
 	void   slab_free   (void * _pblk);
 	void * slab_realloc(void * pmem, size_t size);
 	void * slab_calloc (size_t blksize, size_t numblk);
-	///////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////
 
-5, performance (main.cpp)
+6, performance (main.cpp)
 	
 	running on i7-8750H 2.2G, compiled with Visual Studio 2017.
 

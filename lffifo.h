@@ -271,17 +271,17 @@ extern "C" {
       return (true);
    }
    
-   static inline int64_t lffifo_size(lffifo_t * fifo)
+   static inline size_t lffifo_size(const lffifo_t * fifo)
    {
       return fifo->size;
    }
 
-   static inline bool lffifo_empty(lffifo_t * fifo)
+   static inline bool lffifo_empty(const lffifo_t * fifo)
    {
       return (fifo->size == 0);
    }
 
-   static inline bool lffifo_full(lffifo_t * fifo)
+   static inline bool lffifo_full(const lffifo_t * fifo)
    {
       return false;
    }

@@ -22,7 +22,7 @@ extern "C" {
       mirrorbuf_t mbuf;
    } magicq_t;
 
-   static inline bool magicq_create(magicq_t * cb, int order)
+   static inline bool magicq_init(magicq_t * cb, int order)
    {
       cb->size = (1UL << order);
       cb->vsiz = (2UL << order);
@@ -33,7 +33,7 @@ extern "C" {
       return (cb->data != NULL);
    }
 
-   static inline void magicq_destroy(magicq_t * cb)
+   static inline void magicq_free(magicq_t * cb)
    {
       mirrorbuf_destroy(&(cb->mbuf));
    }
@@ -50,7 +50,12 @@ extern "C" {
 
    static inline void * magicq_top(const magicq_t * cb)
    {
-      return cb->data[cb->head];
+      return (void *)(cb->data[cb->head]);
+   }
+
+   static inline size_t magicq_size(const magicq_t * cb)
+   {
+      return (cb->tail < cb->head) ? (cb->tail + cb->vsiz - cb->head) :(cb->tail - cb->head);
    }
 
    static inline bool magicq_push(magicq_t * cb, void * data)

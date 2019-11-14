@@ -13,19 +13,23 @@ extern "C" {
    struct lf_node;
    typedef struct lf_node lf_node_t;
 
+   struct lf_pointer;
+   typedef struct lf_pointer lf_pointer_t;
+
    struct lf_node
    {
       lf_node_t * node;
       uint64_t    aba_;
+
       uint64_t    valu;
       uint64_t    padd;
    };
 
-   typedef struct lf_pointer
+   struct lf_pointer
    {
-      struct lf_pointer * node;
-      uint64_t    aba_;
-   } lf_pointer_t;
+      lf_pointer_t * node;
+      uint64_t       aba_;
+   };
    //////////////////////////////////////////////////////////////
 
    //////////////////////////////////////////////////////////////

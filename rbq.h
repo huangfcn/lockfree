@@ -267,7 +267,7 @@ extern "C" {
    };
 
    /* push described in "Yet another implementation of a 
-   lock-free circular array queue" by Faustino Frechilla
+      lock-free circular array queue" by Faustino Frechilla
    */
    static inline bool rbq_push2(rbq_t * rbq, void * data)
    {
@@ -314,7 +314,7 @@ extern "C" {
    };
 
    /* pop described in "Yet another implementation of a 
-   lock-free circular array queue" by Faustino Frechilla
+      lock-free circular array queue" by Faustino Frechilla
    */
    static inline void * rbq_pop2(rbq_t * rbq)
    {

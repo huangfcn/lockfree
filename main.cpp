@@ -1,21 +1,55 @@
 #include <stdio.h>
 #include <time.h>
-#include <Windows.h>
 
+#ifdef _WIN32
+#include <Windows.h>
+#define THRRET  DWORD WINAPI
+
+static inline int sleep(int sec)
+{
+   Sleep(sec);
+   return (0);
+}
+#else
+#include <pthread.h>
+#define THRRET  void *
+#endif
+
+#include "magicq.h"
 #include "rbq.h"
 #include "lffifo.h"
 #include "fixedSizeMemoryLF.h"
 
-#define LIMIT	5000000
-
-#define MAXTHREADS	8
+/* MODE 0: SPSC RING BUFFER QUEUE
+   MODE 1: MPMC RING BUFFER QUEUE
+   MODE 2: LOCK FREE FIFO (MSQUE)
+   MODE 3: LOCK FREE STACK
+*/
+#define TESTMODE     1
+#define MAXTHREADS   8
 #define MAXITER      8
 
+#define LIMIT        5000000
+
 typedef struct pont {
-   long 	limit;
-   long	stopped;
-   long	duration;
+   long  limit;
+   long  stopped;
+   long  duration;
 } pont;
+
+#if (TESTMODE == 0)
+
+#define pile magicq_t
+
+#define INIT(f)      magicq_init((f), 16)
+#define FREE(f)      magicq_free((f))
+
+#define PUSH(f, val) magicq_push((f), (val))
+#define POP(f)       magicq_pop(f)
+
+#define SIZE(f)      magicq_size(f)
+
+#elif (TESTMODE == 1)
 
 #define pile rbq_t
 
@@ -27,11 +61,37 @@ typedef struct pont {
 
 #define SIZE(f)      rbq_size(f)
 
+#elif (TESTMODE == 2)
+
+#define pile lffifo_t
+
+#define INIT(f)      lffifo_init((f), 16)
+#define FREE(f)      lffifo_free((f))
+
+#define PUSH(f, val) lffifo_push((f), (val))
+#define POP(f)       lffifo_pop(f)
+
+#define SIZE(f)      lffifo_size(f)
+
+#elif (TESTMODE == 3)
+
+#define pile lfstack_t
+
+#define INIT(f)      lfstack_init((f), 16)
+#define FREE(f)      lfstack_free((f))
+
+#define PUSH(f, val) lfstack_push((f), (val))
+#define POP(f)       lfstack_pop(f)
+
+#define SIZE(f)      lfstack_size(f)
+#endif
+
+
 /*
-*	Global variables
+*  Global variables
 */
-pile	gstack;
-int	tbl[MAXITER * MAXTHREADS];
+pile  gstack;
+int   tbl[MAXITER * MAXTHREADS];
 int   nFinished = 0;
 
 int64_t totSum = 0;
@@ -118,7 +178,7 @@ long consumer (long n)
    return clock() - t;
 }
 
-DWORD WINAPI hybridthread(void * pp)
+THRRET hybridthread(void * pp)
 {
    pont* p = (pont*) pp;
    p->duration = hybrid(p->limit);
@@ -126,7 +186,7 @@ DWORD WINAPI hybridthread(void * pp)
    return 0;
 }
 
-DWORD WINAPI producerthread(void * pp)
+THRRET producerthread(void * pp)
 {
    pont* p = (pont*) pp;
    p->duration = producer(p->limit);
@@ -134,7 +194,7 @@ DWORD WINAPI producerthread(void * pp)
    return 0;
 }
 
-DWORD WINAPI consumerthread(void * pp)
+THRRET consumerthread(void * pp)
 {
    pont* p = (pont*) pp;
    p->duration = consumer(p->limit);
@@ -145,7 +205,11 @@ DWORD WINAPI consumerthread(void * pp)
 //-----------------------------------------------------------------
 void bench (int max)
 {
+#ifdef _WIN32
    DWORD fils[MAXTHREADS];
+#else
+   pthread_t fils[MAXTHREADS];
+#endif
 
    pont  bridge_p[MAXTHREADS]; 
    pont  bridge_c[MAXTHREADS]; 
@@ -171,6 +235,11 @@ void bench (int max)
          bridge_c[i].stopped  = 0;
          bridge_c[i].duration = 0;
 
+         bridge_h[i].limit    = LIMIT;
+         bridge_h[i].stopped  = (TESTMODE == 0) ? 1 : 0;
+         bridge_h[i].duration = 0;
+
+#ifdef _WIN32         
          CreateThread(
             NULL,
             0L,
@@ -179,7 +248,7 @@ void bench (int max)
             0L,
             &(fils[i])
          );
-         
+
          CreateThread(
             NULL,
             0L,
@@ -188,11 +257,8 @@ void bench (int max)
             0L,
             &(fils[i])
          );
-         
-         bridge_h[i].limit    = LIMIT;
-         bridge_h[i].stopped  = 0;
-         bridge_h[i].duration = 0;
-         
+
+         #if (TESTMODE != 0)
          CreateThread(
             NULL,
             0L,
@@ -201,12 +267,36 @@ void bench (int max)
             0L,
             &(fils[i])
          );
+         #endif
+#else
+         pthread_create(
+            &fils[i], 
+            NULL,
+            producerthread, 
+            &bridge_p[i]
+         );
 
+         pthread_create(
+            &fils[i], 
+            NULL,
+            consumerthread, 
+            &bridge_c[i]
+         );
+
+         #if (TESTMODE != 0)
+         pthread_create(
+            &fils[i], 
+            NULL,
+            hybridthread, 
+            &bridge_h[i]
+         );
+         #endif
+#endif
       }
 
       nFinished = 0;
       do {
-         Sleep(1);
+         sleep(1);
          end = 1; 
          int nn  = 0;
          for (i=0; i<th; i++) {
@@ -237,7 +327,7 @@ void bench (int max)
 
       perf /= th * LIMIT * MAXITER;
       perf *= 1000000 / CLOCKS_PER_SEC;
-      printf (" totSum = %lld, perf (in us per pop/push):\t %2f\n", totSum, perf); fflush (stdout);
+      printf (" totSum = %ld, perf (in us per pop/push):\t %2f\n", totSum, perf); fflush (stdout);
 
       FREE(&gstack);
    }
@@ -247,8 +337,17 @@ int main()
 {
    mmFixedSizeMemoryStartup();
 
-   printf("\n-------- Lock free fifo stack bench ----------\n");
-   bench (MAXTHREADS);
+#if (TESTMODE == 0)
+   printf("\n-------- Lock free ring buffer (SPSC) bench ----------\n");
+#elif (TESTMODE == 1)
+   printf("\n-------- Lock free ring buffer (MPMC) bench ----------\n");
+#elif (TESTMODE == 2)
+   printf("\n-------- Lock free queue (MSQ) bench ----------\n");
+#elif (TESTMODE == 3)
+   printf("\n-------- Lock free stack bench ----------\n");
+#endif
+
+   bench ((TESTMODE == 0) ? (1) : MAXTHREADS);
 
    mmFixedSizeMemoryCleanup();
 

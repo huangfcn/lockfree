@@ -121,7 +121,6 @@ int fixedSizeMemoryStartup(
 )
 {
    size_t blkSizeInBytes;
-   size_t blkSizeInUnits;
    size_t pageSizeInBytes, pages;
 
    size_t hdrsize = sizeof(lf_pointer_t);
@@ -151,7 +150,7 @@ void fixedSizeMemoryCleanup(
 )
 {
    lf_pointer_t * ptmp = NULL;
-   while (ptmp = lfstack_pop_internal(&(pblk->systemMemoryList)))
+   while ((ptmp = lfstack_pop_internal(&(pblk->systemMemoryList))))
    {
       /* free system memory */
       systemMemoryFree(
@@ -168,7 +167,7 @@ void * fixedSizeMemoryAlloc(
    fixedSizeMemoryControl * pblk
 )
 {
-   /* try to allocate from freelist */
+   /* allocate from freelist first */
    void * ptmp = (void *)lfstack_pop_internal(
       &(pblk->freeList)
    );
@@ -216,7 +215,7 @@ void * fixedSizeMemoryAlloc(
       extraSize -= unitSize;
       for ( ; extraSize >= unitSize; extraSize -= unitSize )
       {
-         lfstack_push_internal(&(pblk->freeList), pExtraSystemMemory);
+         lfstack_push_internal(&(pblk->freeList), (lf_pointer_t *)pExtraSystemMemory);
          pExtraSystemMemory += unitSize;
       }
 

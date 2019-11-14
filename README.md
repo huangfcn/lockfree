@@ -1,4 +1,4 @@
-1, lock free single producer single consumer queue based on ring buffer (magic queue)
+1, lock free single producer single consumer queue based on ring buffer (magic ring buffer)
 
 	#include "magicq.h"
   
@@ -26,27 +26,28 @@
 	void rbq_free(rbq_t * rbq);
 
 	// ================================================================================
-	// push/pop/full/empty/size operations
+	// push/pop/full/empty/size operations                                            =
 	// ================================================================================
-	// Push and pop implemented with FAA on index and CAS loop on data. 
-	// FAA will assign a queue slot to each caller and 
-	// CAS will make sure a correct data swap.
+	// Push and pop are implemented with a FAA on index and CAS loops on data.        =
+	// FAA will assign a data slot to the caller and CAS loops will make sure         =
+	// a correct data swap.                                                           =
 	// ================================================================================
-	// CAS loop on data will distribute CAS loops onto the whole data set, 
-	// it will reduce the CAS conflicts and boost the performance.
+	// CAS loop on data will distribute CAS loops onto the whole data array, and      =
+	// at most 2 threads will loop on one address(a reader and a writer).             =
+	// This will effectively reduce the CAS conflicts and boost the performance.      =
 	// ================================================================================
-	// Data enque/dequeue assumes to be address, 
-	// NULL is not allowed and it is used as special data in CAS loop. 
+	// Datas enqued/dequeued are assumed to be address,                               =
+	// NULL is not allowed and it is used as a special value in CAS loop.             =
 	// ================================================================================
-	bool   rbq_push(rbq_t * rbq, void * data);
-	void * rbq_pop (rbq_t * rbq);
+	bool   rbq_push (rbq_t * rbq, void * data);
+	void * rbq_pop  (rbq_t * rbq);
 	bool   rbq_full (const rbq_t * rbq);
 	bool   rbq_empty(const rbq_t * rbq);
 	size_t rbq_size (const rbq_t * rbq);
 
 	// push/pop using the method in 
 	// "Yet another implementation of a lock-free circular array queue" 
-	// by Faustino Frechilla"
+	// by Faustino Frechilla
 	bool   rbq_push2(rbq_t * rbq, void * data);
 	void * rbq_pop2 (rbq_t * rbq);
 
@@ -65,8 +66,8 @@
 	void lffifo_free(lffifo_t * fifo);
 
 	// push/pop/full/empty/size operations
-	bool   lffifo_push(lffifo_t * fifo, void * value);
-	void * lffifo_pop (lffifo_t * fifo);
+	bool   lffifo_push (lffifo_t * fifo, void * value);
+	void * lffifo_pop  (lffifo_t * fifo);
 	bool   lffifo_full (const lffifo_t * fifo);
 	bool   lffifo_empty(const lffifo_t * fifo);
 	size_t lffifo_size (const lffifo_t * fifo);
@@ -104,7 +105,7 @@
 		allocation becomes getting a block from corresponding free list      
 		free       becomes putting a block into corresponding free list      
 																		   
-		 1 bytes -   240   bytes, maintained in blocks aligned to  16 bytes
+		1  bytes -   240   bytes, maintained in blocks aligned to  16 bytes
 	   241 bytes -  3,840  bytes, maintained in blocks aligned to 256 bytes
 	 3,841 bytes -  61,440 bytes, maintained in blocks aligned to  4k bytes
 	61,441 bytes - 524,288 bytes, maintained in blocks aligned to 64k bytes

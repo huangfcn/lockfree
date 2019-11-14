@@ -17,15 +17,15 @@ typedef struct pont {
    long	duration;
 } pont;
 
-#define pile lffifo_t
+#define pile rbq_t
 
-#define INIT(f)      lffifo_init((f), 16)
-#define FREE(f)      lffifo_free((f))
+#define INIT(f)      rbq_init((f), 16)
+#define FREE(f)      rbq_free((f))
 
-#define PUSH(f, val) lffifo_push((f), (val))
-#define POP(f)       lffifo_pop(f)
+#define PUSH(f, val) rbq_push((f), (val))
+#define POP(f)       rbq_pop(f)
 
-#define SIZE(f)      lffifo_size(f)
+#define SIZE(f)      rbq_size(f)
 
 /*
 *	Global variables

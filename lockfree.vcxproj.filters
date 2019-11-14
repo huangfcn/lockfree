@@ -26,23 +26,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mirrorbuf.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="rbq.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="magicq.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lffifo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="fixedSizeMemoryLF.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lf_struct.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lffifo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="magicq.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mirrorbuf.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

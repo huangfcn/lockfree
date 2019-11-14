@@ -365,11 +365,12 @@ extern "C" {
 
          if  ((head.node == fifo->head_.node) && (head.aba_ == fifo->head_.aba_))
          {
-            if (head.node == tail.node){
-               if (next.node == NULL) {
-                  return  NULL;
-               }
+            /* queue empty (?) */
+            if (next.node == NULL) {
+               return  NULL;
+            }
 
+            if (head.node == tail.node){
                lf_pointer_t newp;
                newp.node = next.node;
                newp.aba_ = tail.aba_+1;

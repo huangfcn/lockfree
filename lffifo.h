@@ -163,7 +163,7 @@ extern "C" {
       return (node);
    }
 
-   static inline bool lfstack_init(lfstack_t * stack, int order)
+   static inline bool lfstack_init(lfstack_t * stack)
    {
       lfstack_init_internal(&(stack->worklist));
       
@@ -171,17 +171,17 @@ extern "C" {
       return true;
    }
 
-   static inline size_t lfstack_size(lfstack_t * stack)
+   static inline size_t lfstack_size(const lfstack_t * stack)
    {
       return (stack->size);
    }
 
-   static inline bool lfstack_empty(lfstack_t * stack)
+   static inline bool lfstack_empty(const lfstack_t * stack)
    {
       return (stack->size == 0);
    }
 
-   static inline bool lfstack_full(lfstack_t * stack)
+   static inline bool lfstack_full(const lfstack_t * stack)
    {
       return (false);
    }
@@ -245,7 +245,7 @@ extern "C" {
    ////////////////////////////////////////////////////////////////////////////////////
    // FIFO                                                                           //
    ////////////////////////////////////////////////////////////////////////////////////
-   static inline bool lffifo_init(lffifo_t * fifo, int order)
+   static inline bool lffifo_init(lffifo_t * fifo)
    {
       /* initialize fifo control block */
       lffifo_node_t * node = (lffifo_node_t *)mmFixedSizeMemoryAlloc(

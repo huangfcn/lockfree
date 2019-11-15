@@ -59,8 +59,8 @@
 
 	#include "lffifo.h"
 
-	// initialize lock-free msq (parameter order not used)
-	bool lffifo_init(lffifo_t * fifo, int order);
+	// initialize lock-free msq
+	bool lffifo_init(lffifo_t * fifo);
 
 	// free msq
 	void lffifo_free(lffifo_t * fifo);
@@ -76,8 +76,8 @@
 
 	#include "lffifo.h"
 
-	// initialize lock-free stack (parameter order not used)
-	bool lfstack_init(lfstack_t * stack, int order);
+	// initialize lock-free stack
+	bool lfstack_init(lfstack_t * stack);
 
 	// free stack
 	void lfstack_free(lfstack_t * stack);
@@ -105,7 +105,7 @@
 		allocation becomes getting a block from corresponding free list      
 		free       becomes putting a block into corresponding free list      
 																		   
-		1  bytes -   240   bytes, maintained in blocks aligned to  16 bytes
+	     1  bytes -   240  bytes, maintained in blocks aligned to  16 bytes
 	   241 bytes -  3,840  bytes, maintained in blocks aligned to 256 bytes
 	 3,841 bytes -  61,440 bytes, maintained in blocks aligned to  4k bytes
 	61,441 bytes - 524,288 bytes, maintained in blocks aligned to 64k bytes

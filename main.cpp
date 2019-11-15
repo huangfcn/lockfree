@@ -26,7 +26,7 @@ static inline int sleep(int sec)
    MODE 3: LOCK FREE STACK
 */
 #define TESTMODE     1
-#define MAXTHREADS   8
+#define MAXTHREADS   32
 #define MAXITER      8
 
 #define LIMIT        5000000
@@ -65,7 +65,7 @@ typedef struct pont {
 
 #define pile lffifo_t
 
-#define INIT(f)      lffifo_init((f), 16)
+#define INIT(f)      lffifo_init((f))
 #define FREE(f)      lffifo_free((f))
 
 #define PUSH(f, val) lffifo_push((f), (val))
@@ -77,7 +77,7 @@ typedef struct pont {
 
 #define pile lfstack_t
 
-#define INIT(f)      lfstack_init((f), 16)
+#define INIT(f)      lfstack_init((f))
 #define FREE(f)      lfstack_free((f))
 
 #define PUSH(f, val) lfstack_push((f), (val))

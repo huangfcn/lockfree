@@ -159,7 +159,7 @@ extern "C" {
 
    static inline size_t rbq_size(const rbq_t * rbq)
    {
-      return (rbq->tail - rbq->head);
+      return ((rbq->head >= rbq->tail) ? (0) : (rbq->tail - rbq->head));
    }
 
    /* push @ mutiple producers */

@@ -1,4 +1,4 @@
-1, lock free single producer single consumer queue based on ring buffer (magic ring buffer)
+# lock free single producer single consumer queue based on ring buffer (magic ring buffer)
 
 	#include "magicq.h"
   
@@ -15,7 +15,7 @@
 	bool   magicq_empty(const magicq_t * cb);
 	size_t magicq_size (const magicq_t * cb);
 
-2, lock free multiple producers multiple consumers queue based on ring buffer (RBQ)
+# lock free multiple producers multiple consumers queue based on ring buffer (RBQ)
 
 	#include "rbq.h"
   
@@ -55,7 +55,7 @@
 	bool   rbq_pushspsc(rbq_t * rbq, void * data);
 	void * rbq_popspsc (rbq_t * rbq);
 
-3, lock free multiple producers multiple consumers queue based on single linked list (Michael Scott)
+# lock free multiple producers multiple consumers queue based on single linked list (Michael Scott)
 
 	#include "lffifo.h"
 
@@ -72,7 +72,7 @@
 	bool   lffifo_empty(const lffifo_t * fifo);
 	size_t lffifo_size (const lffifo_t * fifo);
 
-4, lock free multiple producers multiple consumers stack based on single linked list
+# lock free multiple producers multiple consumers stack based on single linked list
 
 	#include "lffifo.h"
 
@@ -89,7 +89,7 @@
 	bool   lfstack_empty(const lfstack_t * stack);
 	size_t lfstack_size (const lfstack_t * stack);
 
-5, lock free memory management based on fixed size memory blocks
+# lock free memory management based on fixed size memory blocks
    
 	All memory blocks in same size are managed in a stack using single 
 	linked list. Allocate or free memory only requires one push/pop op 
@@ -138,7 +138,7 @@
 	void * slab_calloc (size_t blksize, size_t numblk);
 	////////////////////////////////////////////////////////////////////
 
-6, performance (main.cpp)
+# performance (main.cpp)
 	
 	running on i7-8750H 2.2G, compiled with Visual Studio 2017.
 

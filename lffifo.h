@@ -129,8 +129,9 @@ extern "C" {
          next.aba_ = orig.aba_ + 1;
          next.node = pt;
 
-         pt->node = head->node;
-         pt->aba_ = next.aba_;
+         /* write (pt) with release */
+         ((volatile lf_pointer_t *)(pt))->node = head->node;
+         ((volatile lf_pointer_t *)(pt))->aba_ = next.aba_;
 
       } while (!CAS2((int64_t *)head, (int64_t *)(&orig), (int64_t *)(&next)));
 
@@ -155,8 +156,9 @@ extern "C" {
             return NULL;
          }
 
+         /* load (node) with acquire */
          next.aba_ = orig.aba_ + 1;
-         next.node = node->node;
+         next.node = ((volatile lf_pointer_t *)(node))->node;
 
       } while (!CAS2((int64_t *)head, (int64_t *)(&orig), (int64_t *)(&next)));
 
@@ -198,7 +200,9 @@ extern "C" {
       {
          return false;
       }
-      node->valu = (uint64_t)value;
+
+      /* write (node) with release */
+      ((volatile lfstack_node_t *)(node))->valu = (uint64_t)value;
       //////////////////////////////////////
 
       lfstack_push_internal(
@@ -222,7 +226,8 @@ extern "C" {
          return NULL;
       }
 
-      uint64_t value = node->valu;
+      /* load (node) with acquire */
+      uint64_t value = ((volatile lfstack_node_t *)(node))->valu;
 
       /* free the node */
       mmFixedSizeMemoryFree(node, sizeof(lfstack_node_t));
@@ -256,9 +261,10 @@ extern "C" {
          return false;
       }
 
-      node->node = NULL;
-      node->aba_ = 0;
-      node->valu = 0;
+      /* write (node) with release */
+      ((volatile lffifo_node_t *)(node))->node = NULL;
+      ((volatile lffifo_node_t *)(node))->aba_ = 0;
+      ((volatile lffifo_node_t *)(node))->valu = 0;
 
       fifo->head_.node = (lf_pointer_t *)node;
       fifo->head_.aba_ = 0;
@@ -297,8 +303,9 @@ extern "C" {
          return false;
       }
 
-      node->valu = (uint64_t)(value);
-      node->node = NULL;
+      /* write (node) with release */
+      ((volatile lffifo_node_t *)(node))->valu = (uint64_t)(value);
+      ((volatile lffifo_node_t *)(node))->node = NULL;
 
       /* tail/next load with acquire (all change on other core we should know) */
       lf_pointer_t tail, next;
@@ -392,7 +399,7 @@ extern "C" {
             }  
             else {
                /* copy valu */
-               valu = ((lffifo_node_t *)next.node)->valu;
+               valu = ((volatile lffifo_node_t *)(next.node))->valu;
 
                lf_pointer_t newp;
                newp.node = next.node;

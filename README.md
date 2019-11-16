@@ -36,7 +36,7 @@
 	// at most 2 threads will loop on one address(a reader and a writer).             =
 	// This will effectively reduce the CAS conflicts and boost the performance.      =
 	// ================================================================================
-	// Datas enqued/dequeued are assumed to be address,                               =
+	// Datas enqued/dequeued are assumed to be pointers,                              =
 	// NULL is not allowed and it is used as a special value in CAS loop.             =
 	// ================================================================================
 	bool   rbq_push (rbq_t * rbq, void * data);

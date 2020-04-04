@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fixedSizeMemoryLF.c" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="mirrorbuf.c" />
   </ItemGroup>
   <ItemGroup>

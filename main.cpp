@@ -16,16 +16,16 @@ static inline int sleep(int sec)
 #endif
 
 #include "magicq.h"
-#include "rbq.h"
-#include "lffifo.h"
-#include "fixedSizeMemoryLF.h"
+#include "rbq.hpp"
+#include "lffifo.hpp"
+#include "fixedSizeMemoryLF.hpp"
 
 /* MODE 0: SPSC RING BUFFER QUEUE
    MODE 1: MPMC RING BUFFER QUEUE
    MODE 2: LOCK FREE FIFO (MSQUE)
    MODE 3: LOCK FREE STACK
 */
-#define TESTMODE     1
+#define TESTMODE     3
 #define MAXTHREADS   32
 #define MAXITER      8
 

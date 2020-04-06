@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// #include "mirrorbuf.h"
-
 #ifndef __LOCKFREE_RBQ_MPMC_H__
 #define __LOCKFREE_RBQ_MPMC_H__
 
@@ -112,6 +110,7 @@ extern "C" {
    {
       uint64_t size;
       uint64_t vsiz;
+
       volatile uint64_t maxi;
       uint64_t pad1[5];
 
@@ -122,8 +121,6 @@ extern "C" {
       uint64_t pad3[7];
 
       volatile rbq_swap_t * data;
-      uint64_t pad4[7];
-      // mirrorbuf_t mbuf;
    } rbq_t;
 
    static inline bool rbq_init(rbq_t * rbq, int order)
@@ -134,7 +131,6 @@ extern "C" {
       rbq->tail = 0;
       rbq->maxi = 0;
 
-      // rbq->data = (uint64_t *)mirrorbuf_create(&(rbq->mbuf), rbq->size * sizeof(uint64_t));
       rbq->data = (rbq_swap_t *)_aligned_malloc(rbq->size * sizeof(rbq_swap_t), 16);
       memset((void *)rbq->data, 0, rbq->size * sizeof(rbq_swap_t));
 
@@ -143,8 +139,7 @@ extern "C" {
 
    static inline void rbq_free(rbq_t * rbq)
    {
-      _aligned_free((rbq_swap_t *)(rbq->data)); 
-      // mirrorbuf_destroy(&(rbq->mbuf));
+      _aligned_free((rbq_swap_t *)(rbq->data));
    }
 
    static inline bool rbq_full(const rbq_t * rbq)
@@ -365,7 +360,7 @@ extern "C" {
       if (rbq_full(rbq)) { return false; };
 
       rbq->data[(rbq->tail) & (rbq->size - 1)].addr = ((uint64_t)data);
-      rbq->tail = (rbq->tail + 1); // & (rbq->size - 1);
+      rbq->tail = (rbq->tail + 1);
 
       return true;
    }
@@ -376,7 +371,7 @@ extern "C" {
       if (rbq_empty(rbq)) { return NULL; };
 
       uint64_t d64 = rbq->data[rbq->head & (rbq->size - 1)].addr;
-      rbq->head = (rbq->head + 1); // & (rbq->vsiz - 1);
+      rbq->head = (rbq->head + 1);
 
       return ((void *)d64);
    };

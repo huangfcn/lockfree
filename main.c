@@ -25,8 +25,8 @@ static inline int sleep(int sec)
    MODE 2: LOCK FREE FIFO (MSQUE)
    MODE 3: LOCK FREE STACK
 */
-#define TESTMODE     1
-#define MAXTHREADS   32
+#define TESTMODE     2
+#define MAXTHREADS   8
 #define MAXITER      8
 
 #define LIMIT        5000000

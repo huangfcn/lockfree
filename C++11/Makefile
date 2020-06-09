@@ -1,5 +1,5 @@
 CC     := g++
-CFLAGS := $(CFLAGS) -Wall -O3 -march=native -std=c++11
+CFLAGS := $(CFLAGS) -Wall -O3 -march=native -faligned-new -std=c++17
 
 all : ffbench
 

@@ -22,7 +22,7 @@ static inline int sleep(int sec)
    MODE 2: LOCK FREE STACK
    MODE 3: LOCK FREE FIFO (MSQUE)
 */
-#define TESTMODE     2
+#define TESTMODE     1
 #define MAXTHREADS   8
 #define MAXITER      8
 
@@ -68,20 +68,6 @@ pile  gstack(12);
 #include "lffifo.hpp"
 
 typedef lfstack_t<uint64_t> pile;
-
-#define INIT(f)      
-#define FREE(f)      
-
-#define PUSH(f, val) ((f)->push((uint64_t)(val)))
-#define POP(f)       ((void *)((f)->pop()))
-
-#define SIZE(f)      ((f)->getsize())
-
-pile gstack(12);
-#elif (TESTMODE == 3)
-#include "lffifo.hpp"
-
-typedef lffifo_t<uint64_t> pile;
 
 #define INIT(f)      
 #define FREE(f)      

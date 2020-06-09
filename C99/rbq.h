@@ -18,6 +18,8 @@
 
 #define CACHE_ALIGN_PRE             __declspec(align(64))
 #define CACHE_ALIGN_POST
+
+#define Next2CurrIndex(index, size) (((index) - 1) & ((size) - 1))
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <Windows.h>
@@ -53,6 +55,8 @@ static inline int sched_yield()
 
 #define CACHE_ALIGN_PRE
 #define CACHE_ALIGN_POST            __attribute__ ((aligned (64)))
+
+#define Next2CurrIndex(index, size) (((index) - 0) & ((size) - 1))
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <unistd.h>
@@ -147,8 +151,7 @@ static inline int sched_yield()
                                                                         \
         /* reserve currWriteIndex */                                    \
         nextWriteIndex = FAA(&(rbq->tail));                             \
-        currWriteIndex = (nextWriteIndex - 1) & (rbq->size - 1);        \
-                                                                        \
+        currWriteIndex = Next2CurrIndex(nextWriteIndex, rbq->size);     \
         /* We know that space @ currWriteIndex is reserved for us. */   \
         /* In case of slow writer,                                 */   \
         /* we use CAS to ensure a correct data swap.               */   \
@@ -183,7 +186,7 @@ static inline int sched_yield()
         /* now perfrom the FAA operation on the read index.          */ \
         /* the Space @ currReadIndex will be reserved for us.        */ \
         nextReadIndex = FAA(&(rbq->head));                              \
-        currReadIndex = (nextReadIndex - 1) & (rbq->size - 1);          \
+        currReadIndex = Next2CurrIndex(nextReadIndex, rbq->size);       \
                                                                         \
         /* We know that space @ currReadIndex is reserved for us.    */ \
         /* In case of slow writer,                                   */ \
